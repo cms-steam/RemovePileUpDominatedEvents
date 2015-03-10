@@ -1,0 +1,180 @@
+// -*- C++ -*-
+//
+// Package:    RemovePileUpDominatedEvents/RemovePileUpDominatedEvents
+// Class:      RemovePileUpDominatedEvents
+// 
+/**\class RemovePileUpDominatedEvents RemovePileUpDominatedEvents.cc RemovePileUpDominatedEvents/RemovePileUpDominatedEvents/plugins/RemovePileUpDominatedEvents.cc
+
+ Description: [one line class summary]
+
+ Implementation:
+     [Notes on implementation]
+*/
+//
+// Original Author:  Silvio DONATO
+//         Created:  Fri, 12 Dec 2014 12:48:57 GMT
+//
+//
+
+
+// system include files
+#include <memory>
+
+// user include files
+#include "FWCore/Framework/interface/Frameworkfwd.h"
+#include "FWCore/Framework/interface/EDFilter.h"
+
+#include "FWCore/Framework/interface/Event.h"
+#include "FWCore/Framework/interface/MakerMacros.h"
+
+#include "FWCore/ParameterSet/interface/ParameterSet.h"
+#include "DataFormats/JetReco/interface/GenJet.h"
+
+//
+// class declaration
+//
+
+
+class RemovePileUpDominatedEvents : public edm::EDFilter {
+   public:
+      explicit RemovePileUpDominatedEvents(const edm::ParameterSet&);
+      ~RemovePileUpDominatedEvents();
+
+      static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
+
+   private:
+      virtual void beginJob() override;
+      virtual bool filter(edm::Event&, const edm::EventSetup&) override;
+      virtual void endJob() override;
+      
+      //virtual void beginRun(edm::Run const&, edm::EventSetup const&) override;
+      //virtual void endRun(edm::Run const&, edm::EventSetup const&) override;
+      //virtual void beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
+      //virtual void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
+
+      // ----------member data ---------------------------
+      edm::InputTag m_genjets;
+      edm::EDGetTokenT<std::vector<reco::GenJet> > genjetsToken;
+};
+
+//
+// constants, enums and typedefs
+//
+
+//
+// static data member definitions
+//
+
+//
+// constructors and destructor
+//
+RemovePileUpDominatedEvents::RemovePileUpDominatedEvents(const edm::ParameterSet& iConfig)
+{
+   //now do what ever initialization is needed
+   using namespace std;
+   m_genjets = iConfig.getParameter<edm::InputTag>("genjets");
+   genjetsToken = consumes<vector<reco::GenJet> >(m_genjets);
+//   edm::Handle<vector<reco::GenJet> > genjets;
+//   iConfig.getByToken(genjetsToken,genjets);
+
+//   cout<<genjets.product().first.pt()<<endl;
+}
+
+
+RemovePileUpDominatedEvents::~RemovePileUpDominatedEvents()
+{
+ 
+   // do anything here that needs to be done at desctruction time
+   // (e.g. close files, deallocate resources etc.)
+
+}
+
+
+//
+// member functions
+//
+
+// ------------ method called on each new Event  ------------
+bool
+RemovePileUpDominatedEvents::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
+{
+
+   using namespace edm;
+   using namespace std;
+   
+   edm::Handle<vector<reco::GenJet> > genjets;
+   iEvent.getByToken(genjetsToken,genjets);
+
+   cout<<genjets.product().first.pt()<<endl;
+
+
+#ifdef THIS_IS_AN_EVENT_EXAMPLE
+   Handle<ExampleData> pIn;
+   iEvent.getByLabel("example",pIn);
+#endif
+
+#ifdef THIS_IS_AN_EVENTSETUP_EXAMPLE
+   ESHandle<SetupData> pSetup;
+   iSetup.get<SetupRecord>().get(pSetup);
+#endif
+   return true;
+}
+
+// ------------ method called once each job just before starting event loop  ------------
+void 
+RemovePileUpDominatedEvents::beginJob()
+{
+}
+
+// ------------ method called once each job just after ending the event loop  ------------
+void 
+RemovePileUpDominatedEvents::endJob() {
+}
+
+// ------------ method called when starting to processes a run  ------------
+/*
+void
+RemovePileUpDominatedEvents::beginRun(edm::Run const&, edm::EventSetup const&)
+{ 
+}
+*/
+ 
+// ------------ method called when ending the processing of a run  ------------
+/*
+void
+RemovePileUpDominatedEvents::endRun(edm::Run const&, edm::EventSetup const&)
+{
+}
+*/
+ 
+// ------------ method called when starting to processes a luminosity block  ------------
+/*
+void
+RemovePileUpDominatedEvents::beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
+{
+}
+*/
+ 
+// ------------ method called when ending the processing of a luminosity block  ------------
+/*
+void
+RemovePileUpDominatedEvents::endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
+{
+}
+*/
+ 
+// ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
+void
+RemovePileUpDominatedEvents::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
+  //The following says we do not know what parameters are allowed so do no validation
+  // Please change this to state exactly what you do use, even if it is no parameters
+  edm::ParameterSetDescription desc;
+  desc.setUnknown();
+  descriptions.addDefault(desc);
+
+   desc.add<edm::InputTag> ("genjets",edm::InputTag("ak5GenJets"));
+
+
+}
+//define this as a plug-in
+DEFINE_FWK_MODULE(RemovePileUpDominatedEvents);
