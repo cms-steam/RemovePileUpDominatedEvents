@@ -118,9 +118,9 @@ bool RemovePileUpDominatedEvents::filter(edm::Event& iEvent, const edm::EventSet
    			if(tmp<dR) dR=tmp;
    		}
    }
-   std::auto_ptr<float> pOut(new float());
+   auto pOut = std::make_unique<float>();
    *pOut=dR;
-   iEvent.put(pOut);
+   iEvent.put(std::move(pOut));
    if (dR<deltaR_) return true;
    return false;
 }

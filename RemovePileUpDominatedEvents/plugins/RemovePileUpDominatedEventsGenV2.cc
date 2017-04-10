@@ -134,9 +134,9 @@ bool RemovePileUpDominatedEventsGenV2::filter(edm::Event& iEvent, const edm::Eve
    if(genJets.product()->size()>0) signal_genJetPt = genJets.product()->at(0).pt();
 
    //save PU - signal genJetPt
-   std::auto_ptr<float> pOut(new float());
+   auto pOut = std::make_unique<float>();
    *pOut=signal_genJetPt-pu_genJetPt_max;   
-   iEvent.put(pOut);
+   iEvent.put(std::move(pOut));
 
    //filter the event
    if (signal_genJetPt>pu_genJetPt_max) return true;
