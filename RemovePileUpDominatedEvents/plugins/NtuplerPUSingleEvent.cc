@@ -242,7 +242,8 @@ NtuplerPUSingleEvent::fillDescriptions(edm::ConfigurationDescriptions& descripti
   desc.add<edm::InputTag> ("pileupSummaryInfos",edm::InputTag("addPileupInfo"));
   desc.add<edm::InputTag> ("simvertex",edm::InputTag("g4SimHits"));
   desc.add<edm::InputTag> ("generatorInfo",edm::InputTag("generator"));
-  desc.add<edm::InputTag> ("genJets",edm::InputTag("ak4GenJets"));
+  desc.add<edm::InputTag> ("genJets",edm::InputTag("ak4GenJetsNoNu"));
+//  desc.add<edm::InputTag> ("genJets",edm::InputTag("ak4GenJets"));
   desc.add<int> ("bunchCrossing",12); //12 correspond to in-time pile-up
   descriptions.addDefault(desc);
 }

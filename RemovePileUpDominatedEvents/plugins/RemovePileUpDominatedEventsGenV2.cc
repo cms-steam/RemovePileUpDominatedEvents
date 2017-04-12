@@ -134,9 +134,9 @@ bool RemovePileUpDominatedEventsGenV2::filter(edm::Event& iEvent, const edm::Eve
    if(genJets.product()->size()>0) signal_genJetPt = genJets.product()->at(0).pt();
 
    //save PU - signal genJetPt
-   std::auto_ptr<float> pOut(new float());
+   auto pOut = std::make_unique<float>();
    *pOut=signal_genJetPt-pu_genJetPt_max;   
-   iEvent.put(pOut);
+   iEvent.put(std::move(pOut));
 
    //filter the event
    if (signal_genJetPt>pu_genJetPt_max) return true;
@@ -190,8 +190,9 @@ void RemovePileUpDominatedEventsGenV2::endJob() {}
 void RemovePileUpDominatedEventsGenV2::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
   edm::ParameterSetDescription desc;
   desc.add<edm::InputTag> ("pileupSummaryInfos",edm::InputTag("addPileupInfo"));
+//  desc.add<edm::InputTag> ("genJets",edm::InputTag("ak4GenJetsNoNu"));
   desc.add<edm::InputTag> ("genJets",edm::InputTag("ak4GenJets"));
-  desc.add<std::string> ("fileListFolder",std::string("/afs/cern.ch/user/s/sdonato/AFSwork/public/genJetPtHatPU"));
+  desc.add<std::string> ("fileListFolder",std::string("/afs/cern.ch/user/s/sdonato/AFSwork/public/genJetPtHadPU_RunIISummer15GS"));
   descriptions.addDefault(desc);
 }
 
